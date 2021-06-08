@@ -2,8 +2,8 @@
 
 int main()
 {
-	RecordsManager rec;
-	rec.createRecords();
+    RecordsManager rec;
+    rec.createRecords();
     rec.calculateEndTime();
     rec.writeFile();
 }

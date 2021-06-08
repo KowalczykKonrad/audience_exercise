@@ -11,7 +11,7 @@
 #include <iostream>
 
 PsvParser::PsvParser(std::experimental::filesystem::path filePath)
-	: mFilePath(filePath),
+      : mFilePath(filePath),
       mColumnRecord()
 {
 }
