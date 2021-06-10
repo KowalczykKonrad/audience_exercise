@@ -3,7 +3,7 @@ CFLAGS = -I. -I./headers -std=c++17 -lstdc++ -lstdc++fs
 DEPS = Converters.hpp PsvParser.hpp Record.hpp RecordsManager.hpp
 OBJ = src/Converters.o src/PsvParser.o src/Record.o src/RecordsManager.o
 COMPILEAPP = $(OBJ) src/main.o
-TESTOBJ = test/first.o test/Converters_Test.o test/Record_Test.o test/PsvParser_Test.o test/RecordsManager_Test.o
+TESTOBJ = test/MainTest.o test/Converters_Test.o test/Record_Test.o test/PsvParser_Test.o test/RecordsManager_Test.o
 COMPILETEST = $(TESTOBJ) $(OBJ)
 
 %.o: %.c $(DEPS)
