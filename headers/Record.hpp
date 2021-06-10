@@ -18,8 +18,10 @@ public:
 		@param channel represents column Channel from the file
 		@param startTime represents column Starttime from the file
 		@param activity represents column Activity from the file
+		@param endTime represents column EndTime from the file
+		@param duration represents column Duration from the file
 	*/
-	Record(std::string homeId, std::string channel, std::string startTime, std::string activity);
+	Record(std::string homeId, std::string channel, std::string startTime, std::string activity, std::string endTime = "", int duration = 0);
 	~Record() = default;
 
 	/*
@@ -51,12 +53,6 @@ public:
 		@return mDuration
 	*/
 	int getDuration() const;
-
-	/*
-		Convert string to time_t type
-		@return converted time_t object
-	*/
-	time_t convertStringToTime();
 
 	/*
 		Information about the values of class members

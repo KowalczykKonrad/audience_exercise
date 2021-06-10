@@ -2,7 +2,7 @@
 
 int main()
 {
-    RecordsManager rec;
+    RecordsManager rec("input-statements.psv");
     rec.createRecords();
     rec.calculateEndTime();
     rec.writeFile();

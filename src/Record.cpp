@@ -9,7 +9,7 @@
 #include <iostream>
 #include <sstream> 
 
-Record::Record(std::string homeId, std::string channel, std::string startTime, std::string activity)
+Record::Record(std::string homeId, std::string channel, std::string startTime, std::string activity, std::string endTime, int duration)
 	: mHomeId(homeId),
 	  mChannel(channel),
 	  mStartTime(startTime),
@@ -37,12 +37,6 @@ std::string Record::getStartTime() const
 std::string Record::getHomeId() const
 {
 	return mHomeId;
-}
-
-time_t Record::convertStringToTime()
-{
-	tm  timeStr = Converters::convertStringToTm(mStartTime);
-	return mktime(&timeStr);
 }
 
 int Record::getDuration() const

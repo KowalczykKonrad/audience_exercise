@@ -10,26 +10,22 @@
 #include <ctime>
 #include <time.h>
 #include <fstream>  
-#include <iostream>
 
-RecordsManager::RecordsManager()
-	: mUncalculatedRecords(),
+RecordsManager::RecordsManager(std::string inputFileName)
+	: mInputFileName(inputFileName),
+      mUncalculatedRecords(),
       mCalculatedRecords()
 {
     try
     {
-        mParser = std::make_shared<PsvParser>(findInputFile());
+        mParser = std::make_shared<PsvParser>(findInputFile(mInputFileName));
     }
     catch (const std::runtime_error& e)
     {
-        //TODO: save msg into logFile
-        std::cout << e.what() << std::endl;
         exit(EXIT_FAILURE);
     }
     catch (const std::exception& e)
     {
-        //TODO: save msg into logFile
-        std::cout << e.what() << std::endl;
         exit(EXIT_FAILURE);
     }
 }
@@ -121,41 +117,57 @@ void RecordsManager::calculateEndTime()
     std::map<std::string, std::map<std::string, std::vector<Record>>> groupedRecords = groupRecordsByHome();
 
 
-    ////Group records by day and home
-    for (auto& dayMap : groupedRecords)
+    try
     {
-        std::string keyDay = dayMap.first;
-        tm storeOnlyDate = Converters::convertStringToTm(keyDay);
-        endOfDay.tm_year = storeOnlyDate.tm_year;
-        endOfDay.tm_mon = storeOnlyDate.tm_mon;
-        endOfDay.tm_mday = storeOnlyDate.tm_mday;
-        for (auto& homeMap : dayMap.second)
+        ////Group records by day and home
+        for (auto& dayMap : groupedRecords)
         {
-            for (int i = 0; i < homeMap.second.size(); ++i)
+            std::string keyDay = dayMap.first;
+            tm storeOnlyDate = Converters::convertStringToTm(keyDay);
+            endOfDay.tm_year = storeOnlyDate.tm_year;
+            endOfDay.tm_mon = storeOnlyDate.tm_mon;
+            endOfDay.tm_mday = storeOnlyDate.tm_mday;
+            for (auto& homeMap : dayMap.second)
             {
-                time_t previousTime = homeMap.second[i].convertStringToTime();
-                time_t currentTime;
-                if (i == homeMap.second.size() - 1)
+                for (int i = 0; i < homeMap.second.size(); ++i)
                 {
-                    //Add 1 because without it duration loses 1 seconds eq 39599
-                    currentTime = mktime(&endOfDay) + 1;
-                }
-                else
-                {
-                    currentTime = homeMap.second[i+1].convertStringToTime();
-                }
+                    std::string tempTime = homeMap.second[i].getStartTime();
+                    time_t previousTime = Converters::convertStringToTime(tempTime);
+                    time_t currentTime;
+                    if (i == homeMap.second.size() - 1)
+                    {
+                        //Add 1 because without it duration loses 1 seconds eq 39599
+                        currentTime = mktime(&endOfDay) + 1;
+                    }
+                    else
+                    {
+                        std::string tempTime = homeMap.second[i+1].getStartTime();
+                        currentTime = Converters::convertStringToTime(tempTime);
+                    }
 
-                double epochTime = difftime(currentTime, previousTime);
-                homeMap.second[i].setDuration(int(epochTime));
+                    double epochTime = difftime(currentTime, previousTime);
+                    homeMap.second[i].setDuration(int(epochTime));
 
-                time_t endDate = previousTime + homeMap.second[i].getDuration() - 1;
-                struct tm timeinfo;
-                localtime_r(&endDate, &timeinfo);
-                homeMap.second[i].setEndTime(Converters::convertTmToString(timeinfo));
-                mCalculatedRecords.push_back(homeMap.second[i]);
+                    time_t endDate = previousTime + homeMap.second[i].getDuration() - 1;
+                    struct tm timeinfo;
+                    localtime_r(&endDate, &timeinfo);
+                    homeMap.second[i].setEndTime(Converters::convertTmToString(timeinfo));
+                    mCalculatedRecords.push_back(homeMap.second[i]);
+                }
             }
-
         }
+    }
+    catch (const std::invalid_argument& e)
+    {
+        exit(EXIT_FAILURE);
+    }
+    catch (const std::out_of_range& e)
+    {
+        exit(EXIT_FAILURE);
+    }
+    catch (const std::exception& e)
+    {
+        exit(EXIT_FAILURE);
     }
 }
 

@@ -12,7 +12,7 @@
 
 PsvParser::PsvParser(std::experimental::filesystem::path filePath)
       : mFilePath(filePath),
-      mColumnRecord()
+        mColumnRecord("HomeNo|Channel|Starttime|Activity")
 {
 }
 
@@ -68,14 +68,10 @@ std::vector<std::vector<std::string>> PsvParser::parse(const std::experimental::
     }
     catch (const std::runtime_error& e)
     {
-        //TODO: save msg into logFile
-        std::cout << e.what() << std::endl;
         exit(EXIT_FAILURE);
     }
     catch (const std::exception& e)
     {
-        //TODO: save msg into logFile
-        std::cout << e.what() << std::endl;
         exit(EXIT_FAILURE);
     }
 }

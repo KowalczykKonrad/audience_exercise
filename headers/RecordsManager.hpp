@@ -17,8 +17,9 @@ class RecordsManager
 public:
 	/*
 		Default constructor
+		@param inputFileName psv file name
 	*/
-	RecordsManager();
+	RecordsManager(std::string inputFileName);
 	~RecordsManager() = default;
 
 	/*
@@ -66,6 +67,7 @@ public:
 
 private:
 
+    std::string mInputFileName;                          // psv file name
 	std::vector<Record> mUncalculatedRecords;            // uncalculated records read from the file
 	std::shared_ptr<PsvParser> mParser;                  // pointer to psv parser
 	std::vector<Record> mCalculatedRecords;              // calculated records with end time and duration
